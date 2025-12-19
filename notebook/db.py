@@ -30,7 +30,12 @@ def get_db():
     if 'db' in g:
         return g.db
 
-    app = current_app.get_current_object()
+    # current_app may be a LocalProxy (with `get_current_object`) or the
+    # Flask app object itself; handle both cases to support CLI usage.
+    try:
+        app = current_app.get_current_object()
+    except AttributeError:
+        app = current_app
     host = app.config.get('DB_HOST', 'localhost')
     port = int(app.config.get('DB_PORT', 3306))
     user = app.config.get('DB_USER')

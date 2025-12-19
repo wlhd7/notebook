@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        {% block head %}{% endblock %}
+        <title>{% block title %}{% endblock %} - Notebook</title>   
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    </head>
+    <body>
+        <nav style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+            <div style="display:flex;gap:1rem;align-items:center;">
+                <a href="{{ url_for('notes.index') }}">Notes</a>
+                <a href="{{ url_for('preview.index') }}">Preview</a>
+            </div>
+
+            <div>
+                <form id="logout-form" method="post" action="{{ url_for('auth.logout') }}" style="display:inline;margin:0;">
+                    <button type="submit" style="background:none;border:none;padding:0;margin-left:0.5rem;cursor:pointer">Logout</button>
+                </form>
+            </div>
+        </nav>
+        {% block body %}{% endblock %}
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var form = document.getElementById('logout-form');
+            if (!form) return;
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Accept': 'application/json' },
+                    credentials: 'same-origin'
+                }).then(function (res) {
+                    var ct = res.headers.get('content-type') || '';
+                    if (ct.indexOf('application/json') !== -1) {
+                        return res.json().then(function (data) {
+                            document.open();
+                            document.write('<!doctype html><html><head><meta charset="utf-8"><title>Logout JSON</title></head><body><pre>' +
+                                JSON.stringify(data, null, 2) + '</pre></body></html>');
+                            document.close();
+                        });
+                    }
+                    if (res.redirected) {
+                        window.location = res.url;
+                        return;
+                    }
+                    // fallback: reload page
+                    window.location.reload();
+                }).catch(function (err) {
+                    console.error('Logout request failed', err);
+                    window.location.reload();
+                });
+            });
+        });
+        </script>
+    </body>
+</html>

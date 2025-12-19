@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block head %}
+  <meta charset="utf-8">
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;margin:2rem}</style>
+{% endblock %}
+{% block body %}
+    <h1>Login</h1>
+    {% if error %}
+      <p style="color: #b00020">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+      <p style="color: #0a7">{{ success }}</p>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('auth.login') }}">
+      <div>
+        <label for="username">Username</label><br />
+        <input id="username" name="username" required autofocus />
+      </div>
+      <div style="margin-top:0.5rem">
+        <label for="password">Password</label><br />
+        <input id="password" name="password" type="password" required />
+      </div>
+      <div style="margin-top:1rem">
+        <button type="submit">Log in</button>
+      </div>
+    </form>
+
+    <p style="margin-top:1rem">You can also POST JSON to this endpoint with fields <code>username</code> and <code>password</code>.</p>
+{% endblock %}

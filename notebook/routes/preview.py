@@ -4,5 +4,5 @@ bp = Blueprint('preview', __name__, url_prefix='/preview')
 
 
 @bp.route('/')
-def preview():
-    pass
+def index():
+    return 'hello'
